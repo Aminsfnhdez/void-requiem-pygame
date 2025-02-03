@@ -1,7 +1,5 @@
 # Void Requiem 🚀
 
-# Void Requiem 🚀
-
 ## Descripción
 Un juego arcade donde controlas una nave espacial y debes derrotar oleadas de enemigos. Desarrollado con Python y Pygame, este juego te pone al mando de una nave espacial en una batalla contra invasores alienígenas.
 
@@ -14,8 +12,9 @@ Un juego arcade donde controlas una nave espacial y debes derrotar oleadas de en
 2. Instala Pygame usando pip:
 
 ## Estructura del Proyecto
+```
 void-requiem/
-│
+└──
 ├── main.py # Archivo principal del juego
 ├── config.py # Configuraciones y constantes
 ├── player.py # Clase del jugador
@@ -26,6 +25,7 @@ void-requiem/
 ├── background.jpg
 ├── laser.wav
 └── explosion.wav
+```
 
 ## Características
 - Sistema de control intuitivo
