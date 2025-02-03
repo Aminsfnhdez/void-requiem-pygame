@@ -10,6 +10,7 @@ Un juego arcade donde controlas una nave espacial y debes derrotar oleadas de en
 ## Instalación
 1. Clona o descarga este repositorio
 2. Instala Pygame usando pip:
+`pip install pygame`
 
 ## Estructura del Proyecto
 ```
