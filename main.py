@@ -58,7 +58,10 @@ while running:
     # Actualizar sprites
     keys = pygame.key.get_pressed()
     player.update(keys)
-    all_sprites.update()
+    # Actualizar todos los sprites excepto el jugador
+    for sprite in all_sprites:
+        if sprite != player:
+            sprite.update() 
 
     # Colisiones de balas con enemigos
     hits = pygame.sprite.groupcollide(enemies, bullets, True, True)
