@@ -8,8 +8,12 @@ from bullet import Bullet
 # Inicializar PyGame
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Eclipse War: The Last Stand")
+pygame.display.set_caption("Void Requiem: The Last Stand")
 clock = pygame.time.Clock()
+
+# Inicializar sistema de puntos
+score = 0
+font = pygame.font.Font(None, 36)
 
 # Cargar imagen de fondo
 background = pygame.image.load("assets/background.jpg")
@@ -32,6 +36,11 @@ def spawn_enemy():
     enemy = Enemy()
     all_sprites.add(enemy)
     enemies.add(enemy)
+
+# Función para mostrar puntuación
+def draw_score():
+    score_text = font.render(f"Puntos: {score}", True, (255, 255, 255))
+    screen.blit(score_text, (10, 10))
 
 # Bucle principal del juego
 running = True
@@ -67,6 +76,7 @@ while running:
     hits = pygame.sprite.groupcollide(enemies, bullets, True, True)
     for hit in hits:
         explosion_sound.play()
+        score += 100  # Aumentar puntuación cuando se destruye un enemigo
 
     # Colisión de enemigos con el jugador (fin del juego)
     if pygame.sprite.spritecollide(player, enemies, True):
@@ -75,6 +85,7 @@ while running:
     # Dibujar en pantalla
     screen.blit(background, (0, 0))
     all_sprites.draw(screen)
+    draw_score()  # Dibujar la puntuación
 
     # Actualizar pantalla
     pygame.display.flip()

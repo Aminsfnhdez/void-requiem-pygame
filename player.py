@@ -8,7 +8,7 @@ class Player(pygame.sprite.Sprite):
         # Redimensiona la imagen a un tamaño más apropiado (por ejemplo, 50x50 píxeles)
         self.image = pygame.transform.scale(original_image, (50, 50))
         self.rect = self.image.get_rect(center=(400, 500))
-        self.speed = 5
+        self.speed = 6
 
     def update(self, keys):
         if keys[pygame.K_LEFT] and self.rect.left > 0:

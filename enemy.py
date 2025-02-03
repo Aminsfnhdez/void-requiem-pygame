@@ -8,7 +8,7 @@ class Enemy(pygame.sprite.Sprite):
         # Redimensiona el enemigo a 40x40 píxeles
         self.image = pygame.transform.scale(original_image, (40, 40))
         self.rect = self.image.get_rect(center=(random.randint(50, 750), -50))
-        self.speed = random.randint(2, 5)
+        self.speed = random.randint(2, 3)
 
     def update(self):
         self.rect.y += self.speed
