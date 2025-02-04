@@ -40,6 +40,11 @@ enemies = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 buffs = pygame.sprite.Group()
 
+# Cargar imágenes del menú
+start_button_img = pygame.image.load("assets/start.png")
+start_button_img = pygame.transform.scale(start_button_img, (200, 80))  # Ajusta el tamaño según tu imagen
+start_button_hover = pygame.transform.scale(start_button_img, (220, 88))  # Versión más grande para hover
+
 # Función para generar enemigos periódicamente
 def spawn_enemy():
     global enemies_in_wave
@@ -58,11 +63,93 @@ def draw_score():
 
 # Función para mostrar mensaje de oleada
 def draw_wave_message():
-    # Hacer que el mensaje parpadee usando una función seno
+    # Hacer que el mensaje parpadea usando una función seno
     if (pygame.time.get_ticks() // 200) % 2:  # Parpadeo cada 200ms
         wave_message = font.render(f"WAVE {current_wave}", True, (255, 255, 255))
         message_rect = wave_message.get_rect(center=(WIDTH//2, HEIGHT//2))
         screen.blit(wave_message, message_rect)
+
+# Función para dibujar el menú
+def draw_menu():
+    screen.blit(background, (0, 0))
+    title_font = pygame.font.Font(None, 74)
+    button_font = pygame.font.Font(None, 46)
+    
+    # Título del juego
+    title = title_font.render("Void Requiem: The Last Stand", True, (255, 255, 255))
+    title_rect = title.get_rect(center=(WIDTH//2, HEIGHT//3))
+    screen.blit(title, title_rect)
+    
+    # Obtener posición del mouse
+    mouse_pos = pygame.mouse.get_pos()
+    
+    # Botón de inicio con imagen
+    start_rect = start_button_img.get_rect(center=(WIDTH//2, HEIGHT//2))
+    if start_rect.collidepoint(mouse_pos):
+        hover_rect = start_button_hover.get_rect(center=(WIDTH//2, HEIGHT//2))
+        screen.blit(start_button_hover, hover_rect)
+        start_rect = hover_rect
+    else:
+        screen.blit(start_button_img, start_rect)
+    
+    # Botón Help
+    help_text = button_font.render("Help", True, (255, 255, 255))
+    help_rect = help_text.get_rect(center=(WIDTH//2, HEIGHT//2 + 60))
+    if help_rect.collidepoint(mouse_pos):
+        help_text = pygame.font.Font(None, 52).render("Help", True, (255, 255, 0))
+        help_rect = help_text.get_rect(center=(WIDTH//2, HEIGHT//2 + 60))
+    screen.blit(help_text, help_rect)
+    
+    # Botón Quit
+    quit_text = button_font.render("Quit", True, (255, 255, 255))
+    quit_rect = quit_text.get_rect(center=(WIDTH//2, HEIGHT//2 + 120))
+    if quit_rect.collidepoint(mouse_pos):
+        quit_text = pygame.font.Font(None, 52).render("Quit", True, (255, 255, 0))
+        quit_rect = quit_text.get_rect(center=(WIDTH//2, HEIGHT//2 + 120))
+    screen.blit(quit_text, quit_rect)
+    
+    return start_rect, help_rect, quit_rect
+
+def draw_help_screen():
+    screen.blit(background, (0, 0))
+    font = pygame.font.Font(None, 46)
+    title_font = pygame.font.Font(None, 74)
+    
+    # Título
+    title = title_font.render("Controls", True, (255, 255, 255))
+    screen.blit(title, (WIDTH//2 - title.get_width()//2, 50))
+    
+    # Controles
+    controls = [
+        "Move Left: LEFT ARROW",
+        "Move Right: RIGHT ARROW",
+        "Shoot: SPACE",
+        "",
+        "Collect power-ups to get double shot!",
+        "Survive all waves to win!"
+    ]
+    
+    y = HEIGHT//3
+    for line in controls:
+        text = font.render(line, True, (255, 255, 255))
+        screen.blit(text, (WIDTH//2 - text.get_width()//2, y))
+        y += 50
+    
+    # Botón Back
+    back_text = font.render("Back to Menu", True, (255, 255, 255))
+    back_rect = back_text.get_rect(center=(WIDTH//2, HEIGHT - 100))
+    
+    # Efecto hover para el botón Back
+    mouse_pos = pygame.mouse.get_pos()
+    if back_rect.collidepoint(mouse_pos):
+        back_text = pygame.font.Font(None, 52).render("Back to Menu", True, (255, 255, 0))
+        back_rect = back_text.get_rect(center=(WIDTH//2, HEIGHT - 100))
+    
+    screen.blit(back_text, back_rect)
+    return back_rect
+
+# Estado del juego
+game_state = "menu"  # Puede ser "menu", "playing" o "help"
 
 # Bucle principal del juego
 running = True
@@ -70,7 +157,54 @@ while running:
     clock.tick(FPS)
     current_time = pygame.time.get_ticks()
 
-    # Manejo de eventos
+    if game_state == "menu":
+        # Dibujar menú
+        start_rect, help_rect, quit_rect = draw_menu()
+        
+        # Manejar eventos del menú
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if start_rect.collidepoint(mouse_pos):
+                    game_state = "playing"
+                    # Reiniciar variables del juego
+                    score = 0
+                    current_wave = 1
+                    enemies_in_wave = 0
+                    wave_transition = True
+                    wave_transition_timer = 0
+                    # Limpiar grupos de sprites
+                    all_sprites.empty()
+                    enemies.empty()
+                    bullets.empty()
+                    buffs.empty()
+                    # Crear nuevo jugador
+                    player = Player()
+                    all_sprites.add(player)
+                elif help_rect.collidepoint(mouse_pos):
+                    game_state = "help"
+                elif quit_rect.collidepoint(mouse_pos):
+                    running = False
+        
+        pygame.display.flip()
+        continue
+    
+    elif game_state == "help":
+        back_rect = draw_help_screen()
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if back_rect.collidepoint(event.pos):
+                    game_state = "menu"
+        
+        pygame.display.flip()
+        continue
+
+    # El resto del código del juego solo se ejecuta si game_state == "playing"
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
