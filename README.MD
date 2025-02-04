@@ -48,7 +48,7 @@ void-requiem/
 ## Cómo jugar
 1. Asegúrate de tener todos los requisitos instalados
 2. Navega hasta el directorio del juego
-3. Ejecuta el juego:
+3. Ejecuta el juego: main.py
 
 ## Desarrollo
 El juego está desarrollado utilizando:
