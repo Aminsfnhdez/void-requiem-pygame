@@ -5,6 +5,7 @@ from player import Player
 from enemy import Enemy
 from bullet import Bullet
 from buff import Buff
+from menu import Menu
 
 # Inicializar PyGame
 pygame.init()
@@ -40,12 +41,8 @@ enemies = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 buffs = pygame.sprite.Group()
 
-# Cargar imágenes del menú y UI
-start_button_img = pygame.image.load("assets/start.png")
-start_button_img = pygame.transform.scale(start_button_img, (200, 80))
-start_button_hover = pygame.transform.scale(start_button_img, (220, 88))
-pause_button_img = pygame.image.load("assets/pause.png")
-pause_button_img = pygame.transform.scale(pause_button_img, (40, 40))  # Ajusta el tamaño según necesites
+# Crear instancia del menú
+menu = Menu()
 
 # Función para generar enemigos periódicamente
 def spawn_enemy():
@@ -65,124 +62,35 @@ def draw_score():
 
 # Función para mostrar mensaje de oleada
 def draw_wave_message():
-    # Hacer que el mensaje parpadea usando una función seno
     if (pygame.time.get_ticks() // 200) % 2:  # Parpadeo cada 200ms
-        wave_message = font.render(f"WAVE {current_wave}", True, (255, 255, 255))
-        message_rect = wave_message.get_rect(center=(WIDTH//2, HEIGHT//2))
-        screen.blit(wave_message, message_rect)
+        # Determinar el mensaje y color según la oleada
+        if current_wave == 10:
+            wave_text = "FINAL WAVE"
+            difficulty_text = "BOSS BATTLE"
+            color = (255, 0, 0)  # Rojo para el jefe
+        else:
+            wave_text = f"WAVE {current_wave}"
+            if current_wave <= 3:
+                difficulty_text = "EASY"
+                color = (0, 255, 0)  # Verde
+            elif current_wave <= 6:
+                difficulty_text = "MEDIUM"
+                color = (255, 165, 0)  # Naranja
+            else:
+                difficulty_text = "HARD"
+                color = (255, 0, 0)  # Rojo
 
-# Función para dibujar el menú
-def draw_menu():
-    screen.blit(background, (0, 0))
-    title_font = pygame.font.Font(None, 74)
-    button_font = pygame.font.Font(None, 46)
-    
-    # Título del juego
-    title = title_font.render("Void Requiem: The Last Stand", True, (255, 255, 255))
-    title_rect = title.get_rect(center=(WIDTH//2, HEIGHT//3))
-    screen.blit(title, title_rect)
-    
-    # Obtener posición del mouse
-    mouse_pos = pygame.mouse.get_pos()
-    
-    # Botón de inicio con imagen
-    start_rect = start_button_img.get_rect(center=(WIDTH//2, HEIGHT//2))
-    if start_rect.collidepoint(mouse_pos):
-        hover_rect = start_button_hover.get_rect(center=(WIDTH//2, HEIGHT//2))
-        screen.blit(start_button_hover, hover_rect)
-        start_rect = hover_rect
-    else:
-        screen.blit(start_button_img, start_rect)
-    
-    # Botón Help
-    help_text = button_font.render("Help", True, (255, 255, 255))
-    help_rect = help_text.get_rect(center=(WIDTH//2, HEIGHT//2 + 60))
-    if help_rect.collidepoint(mouse_pos):
-        help_text = pygame.font.Font(None, 52).render("Help", True, (255, 255, 0))
-        help_rect = help_text.get_rect(center=(WIDTH//2, HEIGHT//2 + 60))
-    screen.blit(help_text, help_rect)
-    
-    # Botón Quit
-    quit_text = button_font.render("Quit", True, (255, 255, 255))
-    quit_rect = quit_text.get_rect(center=(WIDTH//2, HEIGHT//2 + 120))
-    if quit_rect.collidepoint(mouse_pos):
-        quit_text = pygame.font.Font(None, 52).render("Quit", True, (255, 255, 0))
-        quit_rect = quit_text.get_rect(center=(WIDTH//2, HEIGHT//2 + 120))
-    screen.blit(quit_text, quit_rect)
-    
-    return start_rect, help_rect, quit_rect
-
-def draw_help_screen():
-    screen.blit(background, (0, 0))
-    font = pygame.font.Font(None, 46)
-    title_font = pygame.font.Font(None, 74)
-    
-    # Título
-    title = title_font.render("Controls", True, (255, 255, 255))
-    screen.blit(title, (WIDTH//2 - title.get_width()//2, 50))
-    
-    # Controles
-    controls = [
-        "Move Left: LEFT ARROW",
-        "Move Right: RIGHT ARROW",
-        "Shoot: SPACE",
-        "",
-        "Collect power-ups to get double shot!",
-        "Survive all waves to win!"
-    ]
-    
-    y = HEIGHT//3
-    for line in controls:
-        text = font.render(line, True, (255, 255, 255))
-        screen.blit(text, (WIDTH//2 - text.get_width()//2, y))
-        y += 50
-    
-    # Botón Back
-    back_text = font.render("Back to Menu", True, (255, 255, 255))
-    back_rect = back_text.get_rect(center=(WIDTH//2, HEIGHT - 100))
-    
-    # Efecto hover para el botón Back
-    mouse_pos = pygame.mouse.get_pos()
-    if back_rect.collidepoint(mouse_pos):
-        back_text = pygame.font.Font(None, 52).render("Back to Menu", True, (255, 255, 0))
-        back_rect = back_text.get_rect(center=(WIDTH//2, HEIGHT - 100))
-    
-    screen.blit(back_text, back_rect)
-    return back_rect
-
-def draw_pause_button():
-    # Dibujar el botón de pausa
-    pause_rect = pause_button_img.get_rect()
-    pause_rect.topright = (WIDTH - 10, 10)  # 10 píxeles de margen
-    screen.blit(pause_button_img, pause_rect)
-    
-    # Agregar texto "Pause" debajo del botón
-    pause_font = pygame.font.Font(None, 24)  # Fuente más pequeña para el texto
-    pause_text = pause_font.render("Pause", True, (255, 255, 255))
-    text_rect = pause_text.get_rect()
-    text_rect.centerx = pause_rect.centerx
-    text_rect.top = pause_rect.bottom + 5  # 5 píxeles de espacio entre el botón y el texto
-    screen.blit(pause_text, text_rect)
-    
-    return pause_rect
-
-def draw_pause_screen():
-    # Oscurecer la pantalla
-    s = pygame.Surface((WIDTH, HEIGHT))
-    s.set_alpha(128)
-    s.fill((0, 0, 0))
-    screen.blit(s, (0, 0))
-    
-    font = pygame.font.Font(None, 74)
-    text = font.render("PAUSED", True, (255, 255, 255))
-    text_rect = text.get_rect(center=(WIDTH//2, HEIGHT//2))
-    screen.blit(text, text_rect)
-    
-    # Botón para continuar
-    continue_font = pygame.font.Font(None, 46)
-    continue_text = continue_font.render("Click anywhere to continue", True, (255, 255, 255))
-    continue_rect = continue_text.get_rect(center=(WIDTH//2, HEIGHT//2 + 60))
-    screen.blit(continue_text, continue_rect)
+        # Renderizar textos
+        wave_message = font.render(wave_text, True, (255, 255, 255))
+        difficulty_message = font.render(difficulty_text, True, color)
+        
+        # Posicionar textos
+        wave_rect = wave_message.get_rect(center=(WIDTH//2, HEIGHT//2 - 20))
+        diff_rect = difficulty_message.get_rect(center=(WIDTH//2, HEIGHT//2 + 20))
+        
+        # Dibujar textos
+        screen.blit(wave_message, wave_rect)
+        screen.blit(difficulty_message, diff_rect)
 
 # Estado del juego
 game_state = "menu"  # Puede ser "menu", "playing", "help" o "paused"
@@ -195,7 +103,7 @@ while running:
 
     if game_state == "menu":
         # Dibujar menú
-        start_rect, help_rect, quit_rect = draw_menu()
+        start_rect, help_rect, quit_rect = menu.draw_menu(screen)
         
         # Manejar eventos del menú
         for event in pygame.event.get():
@@ -228,7 +136,7 @@ while running:
         continue
     
     elif game_state == "help":
-        back_rect = draw_help_screen()
+        back_rect = menu.draw_help_screen(screen)
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -241,7 +149,7 @@ while running:
         continue
 
     elif game_state == "paused":
-        draw_pause_screen()
+        menu.draw_pause_screen(screen)
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -259,7 +167,7 @@ while running:
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                pause_rect = pause_button_img.get_rect(topright=(WIDTH - 10, 10))
+                pause_rect = menu.draw_pause_button(screen)
                 if pause_rect.collidepoint(mouse_pos):
                     game_state = "paused"
                     continue
@@ -314,12 +222,17 @@ while running:
         current_wave += 1
         enemies_in_wave = 0
         if current_wave > max_waves:
-            # Victoria - el jugador ha completado todas las oleadas
-            victory_text = font.render("¡Victoria!", True, (255, 255, 255))
-            screen.blit(victory_text, (WIDTH//2 - 50, HEIGHT//2))
+            # Victoria - mostrar mensaje y volver al menú
+            victory_font = pygame.font.Font(None, 48)
+            victory_text = victory_font.render("¡La galaxia está a salvo gracias a tus valientes hazañas, guerrero!", True, (255, 255, 255))
+            victory_rect = victory_text.get_rect(center=(WIDTH//2, HEIGHT//2))
+            screen.blit(victory_text, victory_rect)
             pygame.display.flip()
-            pygame.time.wait(2000)  # Esperar 2 segundos
-            running = False
+            pygame.time.wait(3000)  # Esperar 3 segundos
+            # Reiniciar el estado del juego
+            game_state = "menu"
+            Enemy.boss_has_spawned = False
+            continue
         else:
             # Iniciar transición a la siguiente oleada
             wave_transition = True
@@ -327,7 +240,18 @@ while running:
 
     # Colisión de enemigos con el jugador (fin del juego)
     if pygame.sprite.spritecollide(player, enemies, True):
-        running = False  # Fin del juego
+        # Mostrar mensaje de game over
+        game_over_font = pygame.font.Font(None, 48)
+        game_over_text = game_over_font.render("¡Game Over!", True, (255, 0, 0))
+        game_over_rect = game_over_text.get_rect(center=(WIDTH//2, HEIGHT//2))
+        screen.blit(game_over_text, game_over_rect)
+        pygame.display.flip()
+        pygame.time.wait(2000)  # Esperar 2 segundos
+        
+        # Reiniciar el juego y volver al menú
+        game_state = "menu"
+        Enemy.boss_has_spawned = False
+        continue
 
     # Generar buff cuando el score alcanza múltiplos de 1000
     if score > 0 and score % 1000 == 0 and len(buffs) == 0:
@@ -345,12 +269,20 @@ while running:
     screen.blit(background, (0, 0))
     all_sprites.draw(screen)
     draw_score()
-    draw_pause_button()  # Dibujar el botón de pausa
+    menu.draw_pause_button(screen)
+    
+    # Dibujar barra de vida del jefe si existe
+    for enemy in enemies:
+        if hasattr(enemy, 'is_boss') and enemy.is_boss:
+            enemy.draw_health_bar(screen)
     
     if wave_transition:
         draw_wave_message()
 
     pygame.display.flip()
+
+    if current_wave > max_waves:
+        Enemy.boss_has_spawned = False  # Reiniciar el estado del jefe
 
 # Salir del juego
 pygame.quit()

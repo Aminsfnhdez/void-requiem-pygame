@@ -34,16 +34,23 @@ void-requiem/
   - Movimiento con flechas izquierda/derecha
   - Disparos con la tecla ESPACIO
 - Sistema de oleadas progresivas (10 oleadas en total)
+  - Dificultad progresiva (Fácil, Media, Difícil)
+  - Jefe final en la oleada 10
+- Sistema de menú completo
+  - Menú principal
+  - Pantalla de ayuda
+  - Sistema de pausa
 - Enemigos con patrones de movimiento aleatorio
 - Sistema de puntuación
 - Sistema de mejoras (power-ups)
-  - Disparo doble temporal al alcanzar cierta puntuación
+  - Disparo doble temporal al alcanzar cada 1000 puntos
 - Efectos de sonido para disparos y explosiones
 - Gráficos espaciales inmersivos
 - Sistema de colisiones
-- Pantalla de inicio
+- Indicadores de dificultad por oleada
 - Mensajes de transición entre oleadas
-- Pantalla de victoria al completar todas las oleadas
+- Sistema de vida para el jefe final
+- Pantallas de victoria y derrota
 
 ## Cómo jugar
 1. Asegúrate de tener todos los requisitos instalados
@@ -54,6 +61,7 @@ void-requiem/
 El juego está desarrollado utilizando:
 - Python 3.x
 - Pygame para el motor de juego
+- Sistema de estados para gestión de menús y pausas
 - Sprites y assets personalizados
 
 ## Créditos
