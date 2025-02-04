@@ -40,10 +40,12 @@ enemies = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 buffs = pygame.sprite.Group()
 
-# Cargar imágenes del menú
+# Cargar imágenes del menú y UI
 start_button_img = pygame.image.load("assets/start.png")
-start_button_img = pygame.transform.scale(start_button_img, (200, 80))  # Ajusta el tamaño según tu imagen
-start_button_hover = pygame.transform.scale(start_button_img, (220, 88))  # Versión más grande para hover
+start_button_img = pygame.transform.scale(start_button_img, (200, 80))
+start_button_hover = pygame.transform.scale(start_button_img, (220, 88))
+pause_button_img = pygame.image.load("assets/pause.png")
+pause_button_img = pygame.transform.scale(pause_button_img, (40, 40))  # Ajusta el tamaño según necesites
 
 # Función para generar enemigos periódicamente
 def spawn_enemy():
@@ -148,8 +150,42 @@ def draw_help_screen():
     screen.blit(back_text, back_rect)
     return back_rect
 
+def draw_pause_button():
+    # Dibujar el botón de pausa
+    pause_rect = pause_button_img.get_rect()
+    pause_rect.topright = (WIDTH - 10, 10)  # 10 píxeles de margen
+    screen.blit(pause_button_img, pause_rect)
+    
+    # Agregar texto "Pause" debajo del botón
+    pause_font = pygame.font.Font(None, 24)  # Fuente más pequeña para el texto
+    pause_text = pause_font.render("Pause", True, (255, 255, 255))
+    text_rect = pause_text.get_rect()
+    text_rect.centerx = pause_rect.centerx
+    text_rect.top = pause_rect.bottom + 5  # 5 píxeles de espacio entre el botón y el texto
+    screen.blit(pause_text, text_rect)
+    
+    return pause_rect
+
+def draw_pause_screen():
+    # Oscurecer la pantalla
+    s = pygame.Surface((WIDTH, HEIGHT))
+    s.set_alpha(128)
+    s.fill((0, 0, 0))
+    screen.blit(s, (0, 0))
+    
+    font = pygame.font.Font(None, 74)
+    text = font.render("PAUSED", True, (255, 255, 255))
+    text_rect = text.get_rect(center=(WIDTH//2, HEIGHT//2))
+    screen.blit(text, text_rect)
+    
+    # Botón para continuar
+    continue_font = pygame.font.Font(None, 46)
+    continue_text = continue_font.render("Click anywhere to continue", True, (255, 255, 255))
+    continue_rect = continue_text.get_rect(center=(WIDTH//2, HEIGHT//2 + 60))
+    screen.blit(continue_text, continue_rect)
+
 # Estado del juego
-game_state = "menu"  # Puede ser "menu", "playing" o "help"
+game_state = "menu"  # Puede ser "menu", "playing", "help" o "paused"
 
 # Bucle principal del juego
 running = True
@@ -204,27 +240,46 @@ while running:
         pygame.display.flip()
         continue
 
-    # El resto del código del juego solo se ejecuta si game_state == "playing"
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    elif game_state == "paused":
+        draw_pause_screen()
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                game_state = "playing"
+        
+        pygame.display.flip()
+        continue
 
-        # Disparar con la tecla espacio
-        if event.type == pygame.KEYDOWN and not wave_transition:
-            if event.key == pygame.K_SPACE:
-                if player.double_shot:
-                    # Crear dos balas paralelas
-                    bullet1 = Bullet(player.rect.centerx - 20, player.rect.top)  # Bala izquierda
-                    bullet2 = Bullet(player.rect.centerx + 20, player.rect.top)  # Bala derecha
-                    all_sprites.add(bullet1, bullet2)
-                    bullets.add(bullet1, bullet2)
-                    shoot_sound.play()
-                else:
-                    # Disparo normal
-                    bullet = Bullet(player.rect.centerx, player.rect.top)
-                    all_sprites.add(bullet)
-                    bullets.add(bullet)
-                    shoot_sound.play()
+    elif game_state == "playing":
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                pause_rect = pause_button_img.get_rect(topright=(WIDTH - 10, 10))
+                if pause_rect.collidepoint(mouse_pos):
+                    game_state = "paused"
+                    continue
+
+            # Disparar con la tecla espacio
+            if event.type == pygame.KEYDOWN and not wave_transition:
+                if event.key == pygame.K_SPACE:
+                    if player.double_shot:
+                        # Crear dos balas paralelas
+                        bullet1 = Bullet(player.rect.centerx - 20, player.rect.top)  # Bala izquierda
+                        bullet2 = Bullet(player.rect.centerx + 20, player.rect.top)  # Bala derecha
+                        all_sprites.add(bullet1, bullet2)
+                        bullets.add(bullet1, bullet2)
+                        shoot_sound.play()
+                    else:
+                        # Disparo normal
+                        bullet = Bullet(player.rect.centerx, player.rect.top)
+                        all_sprites.add(bullet)
+                        bullets.add(bullet)
+                        shoot_sound.play()
 
     # Manejar transición entre oleadas
     if wave_transition:
@@ -289,13 +344,12 @@ while running:
     # Dibujar en pantalla
     screen.blit(background, (0, 0))
     all_sprites.draw(screen)
-    draw_score()  # Dibujar la puntuación
+    draw_score()
+    draw_pause_button()  # Dibujar el botón de pausa
     
-    # Mostrar mensaje de oleada durante la transición
     if wave_transition:
         draw_wave_message()
 
-    # Actualizar pantalla
     pygame.display.flip()
 
 # Salir del juego
