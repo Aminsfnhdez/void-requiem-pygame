@@ -4,6 +4,7 @@ from config import WIDTH, HEIGHT, FPS
 from player import Player
 from enemy import Enemy
 from bullet import Bullet
+from buff import Buff
 
 # Inicializar PyGame
 pygame.init()
@@ -37,6 +38,7 @@ all_sprites.add(player)
 
 enemies = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
+buffs = pygame.sprite.Group()
 
 # Función para generar enemigos periódicamente
 def spawn_enemy():
@@ -74,12 +76,21 @@ while running:
             running = False
 
         # Disparar con la tecla espacio
-        if event.type == pygame.KEYDOWN and not wave_transition:  # No disparar durante la transición
+        if event.type == pygame.KEYDOWN and not wave_transition:
             if event.key == pygame.K_SPACE:
-                bullet = Bullet(player.rect.centerx, player.rect.top)
-                all_sprites.add(bullet)
-                bullets.add(bullet)
-                shoot_sound.play()
+                if player.double_shot:
+                    # Crear dos balas paralelas
+                    bullet1 = Bullet(player.rect.centerx - 20, player.rect.top)  # Bala izquierda
+                    bullet2 = Bullet(player.rect.centerx + 20, player.rect.top)  # Bala derecha
+                    all_sprites.add(bullet1, bullet2)
+                    bullets.add(bullet1, bullet2)
+                    shoot_sound.play()
+                else:
+                    # Disparo normal
+                    bullet = Bullet(player.rect.centerx, player.rect.top)
+                    all_sprites.add(bullet)
+                    bullets.add(bullet)
+                    shoot_sound.play()
 
     # Manejar transición entre oleadas
     if wave_transition:
@@ -128,6 +139,18 @@ while running:
     # Colisión de enemigos con el jugador (fin del juego)
     if pygame.sprite.spritecollide(player, enemies, True):
         running = False  # Fin del juego
+
+    # Generar buff cuando el score alcanza múltiplos de 1000
+    if score > 0 and score % 1000 == 0 and len(buffs) == 0:
+        buff = Buff()
+        all_sprites.add(buff)
+        buffs.add(buff)
+    
+    # Colisión del jugador con el buff
+    buff_hits = pygame.sprite.spritecollide(player, buffs, True)
+    if buff_hits:
+        player.double_shot = True
+        player.double_shot_timer = pygame.time.get_ticks()  # Iniciar el temporizador
 
     # Dibujar en pantalla
     screen.blit(background, (0, 0))

@@ -17,6 +17,10 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(400, 500))
         # Establece la velocidad del jugador
         self.speed = 7
+        # Agrega la variable double_shot
+        self.double_shot = False
+        self.double_shot_timer = 0
+        self.DOUBLE_SHOT_DURATION = 5000  # 5 segundos en milisegundos
 
     def update(self, keys):
         """
@@ -30,3 +34,8 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_RIGHT] and self.rect.right < 800:
             # Mueve el jugador a la derecha si la tecla derecha está presionada y no está en el borde derecho
             self.rect.x += self.speed
+        # Actualizar el temporizador del doble disparo
+        if self.double_shot:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.double_shot_timer >= self.DOUBLE_SHOT_DURATION:
+                self.double_shot = False
