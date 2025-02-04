@@ -1,16 +1,21 @@
 import pygame
 from config import WIDTH, HEIGHT
+import os
 
 class Menu:
     def __init__(self):
         # Cargar imágenes del menú y UI
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         self.font = pygame.font.Font(None, 36)
-        self.start_button_img = pygame.image.load("assets/start.png")
+        # self.start_button_img = pygame.image.load("assets/start.png")
+        self.start_button_img = pygame.image.load(os.path.join(BASE_DIR, "assets", "start.png"))
         self.start_button_img = pygame.transform.scale(self.start_button_img, (200, 80))
         self.start_button_hover = pygame.transform.scale(self.start_button_img, (220, 88))
-        self.pause_button_img = pygame.image.load("assets/pause.png")
+        # self.pause_button_img = pygame.image.load("assets/pause.png")
+        self.pause_button_img = pygame.image.load(os.path.join(BASE_DIR, "assets", "pause.png"))
         self.pause_button_img = pygame.transform.scale(self.pause_button_img, (40, 40))
-        self.background = pygame.image.load("assets/background.jpg")
+        # self.background = pygame.image.load("assets/background.jpg")
+        self.background = pygame.image.load(os.path.join(BASE_DIR, "assets", "background.jpg"))
         self.background = pygame.transform.scale(self.background, (WIDTH, HEIGHT))
 
     def draw_menu(self, screen):

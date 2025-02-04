@@ -1,5 +1,6 @@
 import random
 import pygame
+import os
 
 class Enemy(pygame.sprite.Sprite):
     """
@@ -15,21 +16,23 @@ class Enemy(pygame.sprite.Sprite):
         :param wave: El número de la oleada actual.
         """
         super().__init__()
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        
         # Determinar qué tipo de enemigo crear basado en la oleada
         if wave == 10 and not Enemy.boss_has_spawned:  # Verificar si el jefe no ha aparecido
-            original_image = pygame.image.load("assets/boss-final.png").convert_alpha()
+            original_image = pygame.image.load(os.path.join(BASE_DIR, "assets", "boss-final.png")).convert_alpha()
             self.image = pygame.transform.scale(original_image, (120, 120))  # Tamaño más grande para el jefe
             self.health = 20  # 20 impactos para derrotar al jefe
             self.is_boss = True
             self.max_health = 20  # Para la barra de vida
             Enemy.boss_has_spawned = True  # Marcar que el jefe ya apareció
         elif wave >= 5 and random.random() < 0.4:
-            original_image = pygame.image.load("assets/enemy2.png").convert_alpha()
+            original_image = pygame.image.load(os.path.join(BASE_DIR, "assets", "enemy2.png")).convert_alpha()
             self.image = pygame.transform.scale(original_image, (40, 40))
             self.health = 2
             self.is_boss = False
         else:
-            original_image = pygame.image.load("assets/enemy.png").convert_alpha()
+            original_image = pygame.image.load(os.path.join(BASE_DIR, "assets", "enemy.png")).convert_alpha()
             self.image = pygame.transform.scale(original_image, (40, 40))
             self.health = 1
             self.is_boss = False

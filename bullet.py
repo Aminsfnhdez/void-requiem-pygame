@@ -1,4 +1,6 @@
 import pygame
+import os
+
 class Bullet(pygame.sprite.Sprite):
     """
     Clase que representa una bala en el juego. Hereda de pygame.sprite.Sprite.
@@ -11,7 +13,8 @@ class Bullet(pygame.sprite.Sprite):
         :param y: La posición y de la bala.
         """
         super().__init__()
-        original_image = pygame.image.load("assets/bullet.png").convert_alpha()
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        original_image = pygame.image.load(os.path.join(BASE_DIR, "assets", "bullet.png")).convert_alpha()
         # Redimensiona la bala a un tamaño más pequeño, por ejemplo 10x20 píxeles
         self.image = pygame.transform.scale(original_image, (10, 20))
         self.rect = self.image.get_rect(center=(x, y))

@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 from config import WIDTH, HEIGHT
 
 class Buff(pygame.sprite.Sprite):
@@ -11,8 +12,9 @@ class Buff(pygame.sprite.Sprite):
         Inicializa el buff con una imagen, posición y velocidad.
         """
         super().__init__()
-        # Cargar y escalar la imagen del buff
-        self.image = pygame.image.load("assets/buff.png")
+        # Obtener el directorio base y cargar la imagen
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        self.image = pygame.image.load(os.path.join(BASE_DIR, "assets", "buff.png"))
         self.image = pygame.transform.scale(self.image, (30, 30))  # Ajusta el tamaño 
         self.rect = self.image.get_rect()
         

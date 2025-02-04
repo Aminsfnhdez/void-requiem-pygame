@@ -5,12 +5,18 @@ Un juego arcade donde controlas una nave espacial y debes derrotar oleadas de en
 
 ## Requisitos Previos
 - Python 3.x instalado en tu sistema
-- pip (gestor de paquetes de Python)
+- pip (gestor de paquetes de Python) *(No necesario si usas la versión ejecutable)*
 
 ## Instalación
 1. Clona o descarga este repositorio
 2. Instala Pygame usando pip:
-`pip install pygame`
+   ```sh
+   pip install pygame
+   ```
+
+## Versión Ejecutable  
+Si no quieres instalar nada, en la carpeta **`dist/`** encontrarás una versión ejecutable del juego.  
+Solo necesitas ejecutar el archivo y ¡disfrutar la batalla espacial sin instalaciones extra! 🚀🎮  
 
 ## Estructura del Proyecto
 ```
@@ -27,6 +33,9 @@ void-requiem/
 ├── background.jpg
 ├── laser.wav
 └── explosion.wav
+│
+└── dist/ # Carpeta con la versión ejecutable del juego
+├── VoidRequiem.exe (Windows) o VoidRequiem (Mac/Linux)
 ```
 
 ## Características
@@ -53,9 +62,16 @@ void-requiem/
 - Pantallas de victoria y derrota
 
 ## Cómo jugar
-1. Asegúrate de tener todos los requisitos instalados
-2. Navega hasta el directorio del juego
-3. Ejecuta el juego: main.py
+1. **Ejecutar desde código:**  
+   - Asegúrate de tener Python y Pygame instalados  
+   - Navega hasta el directorio del juego  
+   - Ejecuta el juego con:
+     ```sh
+     python main.py
+     ```
+2. **Ejecutar desde la versión compilada:**  
+   - Ve a la carpeta `dist/`
+   - Abre `VoidRequiem.exe` (Windows) o `VoidRequiem` (Mac/Linux)
 
 ## Desarrollo
 El juego está desarrollado utilizando:
@@ -69,3 +85,4 @@ Los recursos multimedia (imágenes y sonidos) utilizados en este juego fueron ob
 
 ## Licencia
 Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+

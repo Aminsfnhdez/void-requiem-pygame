@@ -1,4 +1,5 @@
 import pygame
+import os
 
 class Player(pygame.sprite.Sprite):
     """
@@ -9,8 +10,9 @@ class Player(pygame.sprite.Sprite):
         Inicializa el jugador con una imagen, posición y velocidad.
         """
         super().__init__()
-        # Carga la imagen original del jugador
-        original_image = pygame.image.load("assets/player.png").convert_alpha()
+        # Obtener el directorio base y cargar la imagen
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        original_image = pygame.image.load(os.path.join(BASE_DIR, "assets", "player.png")).convert_alpha()
         # Redimensiona la imagen a un tamaño más apropiado (50x50 píxeles)
         self.image = pygame.transform.scale(original_image, (50, 50))
         # Establece la posición del jugador en el centro de la pantalla

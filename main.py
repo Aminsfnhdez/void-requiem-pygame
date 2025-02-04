@@ -1,4 +1,5 @@
 import pygame
+import os
 import random
 from config import WIDTH, HEIGHT, FPS
 from player import Player
@@ -24,13 +25,16 @@ wave_transition_timer = 0  # Temporizador para la transición
 WAVE_TRANSITION_DURATION = 2000  # Duración de la transición en milisegundos
 font = pygame.font.Font(None, 36)
 
-# Cargar imagen de fondo
-background = pygame.image.load("assets/background.jpg")
+# Obtener el directorio base del juego (donde está el script)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Cargar imagen de fondo usando ruta relativa
+background = pygame.image.load(os.path.join(BASE_DIR, "assets", "background.jpg"))
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
-# Cargar sonidos
-shoot_sound = pygame.mixer.Sound("assets/laser.wav")
-explosion_sound = pygame.mixer.Sound("assets/explosion.wav")
+# Cargar sonidos usando rutas relativas
+shoot_sound = pygame.mixer.Sound(os.path.join(BASE_DIR, "assets", "laser.wav"))
+explosion_sound = pygame.mixer.Sound(os.path.join(BASE_DIR, "assets", "explosion.wav"))
 
 # Grupos de sprites
 all_sprites = pygame.sprite.Group()
