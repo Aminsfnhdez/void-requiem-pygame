@@ -5,3 +5,4 @@ __pycache__/
 # Virtual environment
 .venv/
 .venv/lib/site-packages
+.venv/lib/site-packages/pygame
