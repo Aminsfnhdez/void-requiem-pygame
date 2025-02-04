@@ -21,6 +21,7 @@ void-requiem/
 ├── player.py # Clase del jugador
 ├── enemy.py # Clase de enemigos
 ├── bullet.py # Clase de proyectiles
+├── buff.py # Clase de mejoras
 │
 └── assets/ # Recursos multimedia
 ├── background.jpg
@@ -32,11 +33,17 @@ void-requiem/
 - Sistema de control intuitivo
   - Movimiento con flechas izquierda/derecha
   - Disparos con la tecla ESPACIO
+- Sistema de oleadas progresivas (10 oleadas en total)
 - Enemigos con patrones de movimiento aleatorio
+- Sistema de puntuación
+- Sistema de mejoras (power-ups)
+  - Disparo doble temporal al alcanzar cierta puntuación
 - Efectos de sonido para disparos y explosiones
 - Gráficos espaciales inmersivos
 - Sistema de colisiones
 - Pantalla de inicio
+- Mensajes de transición entre oleadas
+- Pantalla de victoria al completar todas las oleadas
 
 ## Cómo jugar
 1. Asegúrate de tener todos los requisitos instalados
